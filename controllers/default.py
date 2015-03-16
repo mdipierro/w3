@@ -11,12 +11,15 @@ def files():
     files = get_files(path=request.folder)
     alerts = []
     user = {'first_name':'Massimo'}
-    if '0' in request.forms:
-        form = request.forms['0']
-        filename = os.path.join(request.folder,form['filename'])
-        bytes = form.get('bytes')
-        if bytes is not None:
-            open(filename,'w').write(bytes)
+    form = request.forms.get('0')
+    if form:        
+        # save file
+        filename = os.path.abspath(os.path.join(request.folder,form['filename']))
+        if filename.startswith(request.folder):
+            bytes = form.get('bytes')
+            if bytes is not None:
+                open(filename,'w').write(bytes)
+    # open file
     bytes = None
     filename = None
     if request.vars.filename:

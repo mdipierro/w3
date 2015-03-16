@@ -11,7 +11,7 @@ html {
 }
 
 .side-nav {
-    min-height: 100%;
+    min-height: 100vh;
 }
 
 body {
@@ -97,7 +97,7 @@ ul.message-dropdown {
     padding: 0;
     max-height: 250px;
     overflow-x: hidden;
-    overflow-y: auto;
+//    overflow-y: auto;
 }
 
 li.message-preview {

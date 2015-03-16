@@ -1,28 +1,10 @@
-import os, re, collections, json
+import os, json
 from form import ractive, Form
+from osutils import get_files
 
 @ractive
 def index():
     return dict(name=request.data.get('name','massimo'))
-
-def get_files(path, ignore_dirs=['errors','sessions']):
-    regex_folders = re.compile('^[\w].+[\w]$$')
-    regex_files = re.compile('^[\w].+\.(py|html|css|js|jpe?g|png|gif|mpe?g4?)$')
-    folder_maps = collections.defaultdict(list)
-    folder_maps[path] = []
-    for (root, dirnames, filenames) in os.walk(path, topdown=True):
-        for dirname in dirnames:
-            if regex_folders.match(dirname) and not dirname in ignore_dirs:
-                children = []
-                newpath = os.path.join(root,dirname) 
-                folder_maps[newpath] = children
-                folder_maps[root].append({'name':dirname,'children':children})
-        for filename in filenames:
-            if regex_files.match(filename):                
-                link = URL(vars=dict(filename=os.path.join(root,filename)[len(path):]))
-                folder_maps[root].append({'name':filename, 'link':link})
-    files = folder_maps[path]
-    return files
 
 @ractive
 def files():
@@ -42,7 +24,8 @@ def files():
             if os.path.getsize(filename)<1e6:
                 bytes = open(filename).read()
                 filename = filename[len(request.folder):]
-                try: json.dumps(bytes)
+                try:
+                    json.dumps(bytes)
                 except:
                     bytes = None
                     alerts.append({'info':'File is not a text file'})
@@ -54,6 +37,7 @@ def files():
 
 @ractive
 def form():
+    """
     form = [
         {'name':'_formname','type':'hidden','value':''},
         {'name':'_csrfkey','type':'hidden','value':''},
@@ -66,6 +50,7 @@ def form():
         {'name':'double','type':'double','label':'Double','value':''},
         {'type':'submit','value':'submit'},
         ]
+    """
     alerts = []
     form = Form(db.thing).process(request.data)
     if form.errors: alerts.append({'error':'Invalid form'})

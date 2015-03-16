@@ -22,11 +22,13 @@
   var urlVars = (function() { var vars = {}, parts = window.location.href.split('#')[0].replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {vars[key] = value;});return vars;})();
   try {
     var modes = {'html':'html','js':'javascript','py':'python','css':'css'};
-    var tokens = urlVars.filename.split('.');
-    var mode = modes[tokens[tokens.length-1]];
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    if(mode) editor.getSession().setMode("ace/mode/"+mode);
+    if(urlVars.filename) {
+      var tokens = urlVars.filename.split('.');
+      var mode = modes[tokens[tokens.length-1]];
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      if(mode) editor.getSession().setMode("ace/mode/"+mode);
+    }
   } catch(e) { ractive.data.alerts.push({error:e}); }
   ractive.on('save-data',function(event){
     ractive.data.forms[0].bytes=editor.getValue();

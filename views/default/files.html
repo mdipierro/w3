@@ -1,0 +1,36 @@
+{% extend 'layout.dashboard.bs3.html' %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1 class="page-header">
+      File Browser <small>{{forms[0].filename}}</small>
+    </h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div id="editor" class="expand-fill">{{forms[0].bytes}}</div>
+  </div>
+</div>
+
+<button class="btn btn-primary float-bottom-right" on-click="save-data">Save</button>
+
+{% block footer %}
+<script src="{%= STATIC %}ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  var urlVars = (function() { var vars = {}, parts = window.location.href.split('#')[0].replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {vars[key] = value;});return vars;})();
+  try {
+    var modes = {'html':'html','js':'javascript','py':'python','css':'css'};
+    var tokens = urlVars.filename.split('.');
+    var mode = modes[tokens[tokens.length-1]];
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    if(mode) editor.getSession().setMode("ace/mode/"+mode);
+  } catch(e) { ractive.data.alerts.push({error:e}); }
+  ractive.on('save-data',function(event){
+    ractive.data.forms[0].bytes=editor.getValue();
+    ractive.fire('save',event,0);
+  });
+</script>
+{% end %}

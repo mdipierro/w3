@@ -1,0 +1,184 @@
+<!--
+menu = [{label:..,link:...,active:...,submenu:...}]
+form = [
+   {
+     label: 'label',
+     name: 'name', 
+     type:'type', // string,text,date,time,datetime,password,upload,list:string,list:integer,boolean,
+     options:[{key:'key',value:'value'}], 
+     value:'value',
+     required: false,
+     readonly: false,
+     error:null,
+//     min, max, regex
+     validator:function(text){return null;},
+   }
+]
+-->
+
+<form class="form-horizontal">
+  <fieldset>
+    {{#forms[form_name||0]:num}}
+
+    {{#if (type=='string' && !options)}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <div class="col-md-4">
+        <input name="{{name}}" type="text" value="{{value}}"
+               placeholder="placeholder" class="form-control input-md"/>
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type=='integer' && !options)}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <div class="col-md-4">
+        <input name="{{name}}" type="string" value="{{value}}"
+               placeholder="placeholder" class="form-control input-md">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type=='double' && !options)}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <div class="col-md-4">
+        <input name="{{name}}" type="string" value="{{value}}"
+               placeholder="placeholder" class="form-control input-md">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+
+    {{#if (type=='date' && !options)}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <div class="col-md-4">
+        <input name="{{name}}" type="string" value="{{value}}" 
+               placeholder="placeholder" class="form-control input-md">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type=='time' && !options)}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <div class="col-md-4">
+        <input name="{{name}}" type="string" value="{{value}}"
+               placeholder="placeholder" class="form-control input-md">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type=='datetime' && !options)}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <div class="col-md-4">
+        <input name="{{name}}" type="string" value="{{value}}" 
+               placeholder="placeholder" class="form-control input-md">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type=='password')}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="passwordinput">{{label}}</label>
+      <div class="col-md-4">
+        <input name="{{name}}" type="password" value="{{value}}"
+               placeholder="placeholder" class="form-control input-md">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type=='boolean')}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="checkboxes">{{label}}</label>
+      <div class="col-md-4">
+        <div class="checkbox">
+          <label for="checkboxes-0">
+            <input type="checkbox" value="on" checked="{{value}}"/>
+            One
+          </label>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if (type.split(':')[0]!='list' && options)}}
+    <!-- Select Basic -->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="selectbasic">{{label}}</label>
+      <div class="col-md-4">
+        <select name="{{name}}" class="form-control" value="{{value}}">
+          {{#options}}
+          <option value="{{value}}">{{label}}</option>
+          {{/optoons}}
+        </select>
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+    
+    {{#if (type.split(':')[0]=='list' && options)}}
+    <!-- Select Multiple -->    
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="selectmultiple">{{label}}</label>
+      <div class="col-md-4">
+        <select name="{{name}}" class="form-control" multiple="multiple"
+                value="{{value}}">
+          {{#options}}
+          <option value="{{value}}">{{label}}</option>
+          {{/optoons}}
+        </select>
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+    
+    {{#if (type=='text')}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textarea">{{label}}</label>
+      <div class="col-md-4">                     
+        <textarea class="form-control" name="{{name}}" value="{{value}}"></textarea>
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- todo: file uploads this does not work as designed -->
+    {{#if (type=='upload')}}
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="filebutton">{{label}}</label>
+      <div class="col-md-4">
+        <input name="{{name}}" class="input-file" type="file">
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
+    {{/forms[form_name||0]}}
+    
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="button1id"></label>      
+      <div class="col-md-8">
+        {{#forms[form_name||0]}}
+        {{#if (type=='submit')}}
+        <button class="btn btn-success" 
+                on-click="save:{{form_name||0}}">{{value}}</button>
+        {{/if}}
+        {{#if (type=='button')}}
+        <button class="btn btn-default">{{value}}</button>
+        {{/if}}
+        {{/forms[form_name||0]}}
+      </div>
+    </div>
+    
+  </fieldset>
+</form>

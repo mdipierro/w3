@@ -1,0 +1,46 @@
+{% extend 'layout.dashboard.bs3.html' %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1 class="page-header">
+      Markmin <small>Example</small>
+    </h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="starter-template">
+      <div style="width:100%; border-bottom: 2px solid #4cae4c; text-align:right">
+        <a class="btn btn-success" on-click="click-edit" style="border-radius: 4px 4px 0 0">Edit</a>
+      </div>
+      <div class="markmin-container">
+        {{#forms[0]}}
+        <textarea class="markmin-source" on-keyup="source-keyup" value="{{bytes}}"></textarea>
+        <div class="markmin-html"></div>
+        {{/forms[0]}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block footer %}
+<script src="{%= STATIC %}js/jquery.oembed.js"></script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="{%= STATIC %}js/sugar.min.js"></script>
+<script src="{%= STATIC %}js/markmin.js"></script>
+<script>
+  ractive.on('click-edit',(function(){
+     var ta = jQuery('.markmin-source');
+     if(ta.is(':visible')) ta.animate(
+            {'min-height':0},400,function(){ta.hide();});
+          else ta.show().animate(
+            {'min-height':jQuery('textarea').val().split('\n').length*18},400);
+  }).debounce());
+  var render = (function() {
+     jQuery('.markmin-html').markmin(jQuery('.markmin-source').val());
+  }).debounce(1000);
+  ractive.on('source-keyup',render);
+  render();
+</script>
+{% end %}

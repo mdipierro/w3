@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% STATIC = URL('static','') %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>W3</title>
+    <!-- Let's deal with legacy browsers -->
+    <script src="{%= STATIC %}js/modernizr.js"></script>
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    <!-- Bootstrap Core CSS -->
+    <link href="{%= STATIC %}css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{%= STATIC %}css/dashboard.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="{%= STATIC %}css/font-awesome.min.css" rel="stylesheet">
+    {% block head %}{% end %}
+  </head>
+  <body>
+    <div id="wrapper"></div>
+    <script id="ractive-main-template" type="text/ractive">
+      <!-- Navigation -->
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" 
+                  data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">W<sup>3</sup></a>
+        </div>
+        <!-- Top Menu Items -->
+        <ul class="nav navbar-right top-nav">
+          {{#if alerts}}
+          <li class="dropdown">            
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-bell"></i> Messages <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu message-dropdown">
+              {{#alerts}}
+              <li class="message-preview">
+                <a href="#">
+                  <div class="media">
+                    <div class="media-body">
+                      {{#if info}}<p>INFO: {{info}}</p>{{/if}}
+                      {{#if warning}}<p>WARNING: {{warning}}</p>{{/if}}
+                      {{#if error}}<p>ERROR: {{error}}</p>{{/if}}
+                    </div>
+                  </div>
+                </a>
+              </li>
+              {{/alerts}}
+              <!--li class="message-footer">
+                <a href="#">Read All New Messages</a>
+              </li-->
+            </ul>
+          </li>
+          {{/if alerts}}
+          {{#if user}}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              {{#user}}
+              <i class="fa fa-user"></i> {{first_name}} {{last_name}} <b class="caret"></b>
+              {{/user}}
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="#"><i class="fa fa-fw fa-gear"></i> Change Password</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="#"><i class="fa fa-fw fa-power-off"></i> Sign Out</a>
+              </li>
+            </ul>
+          </li>
+          {{/if}}
+          {{#if (!user)}}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-user"></i> Sign In<b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#"><i class="fa fa-fw fa-user"></i> Sign In</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="#"><i class="fa fa-fw fa-user"></i> Register</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="#"><i class="fa fa-fw fa-gear"></i> Lost Username</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="#"><i class="fa fa-fw fa-gear"></i> Lost Password</a>
+              </li>
+            </ul>
+          </li>
+          {{/if}}
+        </ul>
+        <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav side-nav">
+            {{>menu_items {menu: menu, path: 'menu'} }}
+          </ul>
+          <!-- the code below defines a ractive partial for nested menus -->
+          <!-- {{>menu_items}} -->
+          {{#menu:num}}
+          <li class="{{#active}}active{{/active}}">
+            {{#if (!.children || .children.length==0)}}
+            <a href="{{link}}">{{name}}</a>
+            {{/if}}
+            {{#if .children}}
+            <a href="javascript:;" data-toggle="collapse" data-target="#sub-{{path}}-{{num}}">
+              {{name}}<i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="sub-{{path}}-{{num}}" class="collapse">
+              {{>menu_items {menu: .children, path: path+'-'+num} }}
+            </ul>
+            {{/if}}
+          </li>
+          {{/menu}}
+          <!-- {{/menu_items}} -->
+        </div><!-- /.navbar-collapse -->
+      </nav>
+      <div id="page-wrapper">
+        <div class="container-fluid">
+          {% include %}  
+        </div><!-- /.container-fluid -->
+      </div><!-- /#page-wrapper -->
+      <!-- include form styling information -->
+      <!-- {{>render_form}} -->
+      {% include 'forms.bs3.html' %}
+      <!-- {{/render_form}} -->
+      <!-- end form styling information -->
+    </script><!-- /#ractive-main-template -->
+    
+    <script src="{%= STATIC %}js/jquery.min.js"></script>
+    <script src="{%= STATIC %}js/ractive.min.js"></script>
+    <script src="{%= STATIC %}js/bootstrap.min.js"></script>
+    <script>
+      var DATA = {%=XML(DATA)%};
+      var PATH = {%=XML(PATH)%};
+      var ractive = new Ractive({ el: 'wrapper', template: '#ractive-main-template', data: DATA });
+      ractive.on('save',function(event,form_name){
+         event.original.preventDefault();
+         var info = {url:window.location.href, method:'POST', contentType:'application/json',
+                     data:JSON.stringify(ractive.data.forms[form_name]), processData:false};
+         jQuery.ajax(info)
+         .then(function(data){
+            if(data.redirect) window.location=data.redirect; 
+            else {for(var key in data) ractive.set(key,data[key]); ractive.fire('saved',data);}
+         }).fail(function(data){alert("Network error: "+data);});
+      }); 
+    </script>
+    {% block footer %}{% end %}
+  </body>
+</html>

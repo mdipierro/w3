@@ -1,0 +1,23 @@
+{% extend 'layout.dashboard.bs3.html' %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1 class="page-header">
+      Form <small>Example</small>
+    </h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    {{> render_form {form_name:0} }}
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-lg-12">
+    {{{ table }}}
+  </div>
+</div>
+

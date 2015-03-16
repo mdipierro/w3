@@ -1,0 +1,18 @@
+{% extend 'layout.dashboard.bs3.html' %}
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1 class="page-header">
+      Dashboard <small>Example</small>
+    </h1>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <a class="btn btn-primary" href="{%= URL('files') %}">File browser</a>
+    <a class="btn btn-primary" href="{%= URL('form') %}">Form generation</a>
+    <a class="btn btn-primary" href="{%= URL('markmin') %}">Clientside markmin</a>
+  </div>
+</div>

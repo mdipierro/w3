@@ -158,8 +158,10 @@
       var ractive = new Ractive({ el: 'wrapper', template: '#ractive-main-template', data: DATA });
       ractive.on('save',function(event,form_name){
          event.original.preventDefault();
+         var data = {'forms':{}};
+         data.forms[form_name] = ractive.data.forms[form_name];
          var info = {url:window.location.href, method:'POST', contentType:'application/json',
-                     data:JSON.stringify(ractive.data.forms[form_name]), processData:false};
+                     data:JSON.stringify(data), processData:false};
          jQuery.ajax(info)
          .then(function(data){
             if(data.redirect) window.location=data.redirect; 

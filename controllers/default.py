@@ -4,16 +4,17 @@ from osutils import get_files
 
 @ractive
 def index():
-    return dict(name=request.data.get('name','massimo'))
+    return dict()
 
 @ractive
 def files():
     files = get_files(path=request.folder)
     alerts = []
     user = {'first_name':'Massimo'}
-    if request.data:        
-        filename = os.path.join(request.folder,request.data['filename'])
-        bytes = request.data.get('bytes')
+    if '0' in request.forms:
+        form = request.forms['0']
+        filename = os.path.join(request.folder,form['filename'])
+        bytes = form.get('bytes')
         if bytes is not None:
             open(filename,'w').write(bytes)
     bytes = None
@@ -52,7 +53,7 @@ def form():
         ]
     """
     alerts = []
-    form = Form(db.thing).process(request.data)
+    form = Form(db.thing).process(request.forms.get('0'))
     if form.errors: alerts.append({'error':'Invalid form'})
     table = db(db.thing).select().xml() # this should move to JS too
     return dict(forms = [form], table=table, alerts=alerts)

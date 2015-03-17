@@ -65,7 +65,7 @@
             </ul>
           </li>
           {{/if alerts}}
-          {{#if user}}
+          {{#if (user && auth)}}
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               {{#user}}
@@ -74,39 +74,39 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                <a href="{{auth.links.profile}}"><i class="fa fa-fw fa-user"></i> Profile</a>
               </li>
               <li class="divider"></li>
               <li>
-                <a href="#"><i class="fa fa-fw fa-gear"></i> Change Password</a>
+                <a href="{{auth.links.change_password}}"><i class="fa fa-fw fa-gear"></i> Change Password</a>
               </li>
               <li class="divider"></li>
               <li>
-                <a href="#"><i class="fa fa-fw fa-power-off"></i> Sign Out</a>
+                <a href="{{auth.links.sign_out}}"><i class="fa fa-fw fa-power-off"></i> Sign Out</a>
               </li>
             </ul>
           </li>
           {{/if}}
-          {{#if (!user)}}
+          {{#if (auth && !user)}}
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-user"></i> Sign In<b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="#"><i class="fa fa-fw fa-user"></i> Sign In</a>
+                <a href="{{auth.links.sign_in}}"><i class="fa fa-fw fa-user"></i> Sign In</a>
               </li>
               <li class="divider"></li>
               <li>
-                <a href="#"><i class="fa fa-fw fa-user"></i> Register</a>
+                <a href="{{auth.links.register}}"><i class="fa fa-fw fa-user"></i> Register</a>
               </li>
               <li class="divider"></li>
               <li>
-                <a href="#"><i class="fa fa-fw fa-gear"></i> Lost Username</a>
+                <a href="{{auth.links.lost_username}}"><i class="fa fa-fw fa-gear"></i> Lost Username</a>
               </li>
               <li class="divider"></li>
               <li>
-                <a href="#"><i class="fa fa-fw fa-gear"></i> Lost Password</a>
+                <a href="{{auth.links.lost_password}}"><i class="fa fa-fw fa-gear"></i> Lost Password</a>
               </li>
             </ul>
           </li>
@@ -153,9 +153,8 @@
     <script src="{%= STATIC %}js/ractive.min.js"></script>
     <script src="{%= STATIC %}js/bootstrap.min.js"></script>
     <script>
-      var DATA = {%=XML(DATA)%};
-      var PATH = {%=XML(PATH)%};
-      var ractive = new Ractive({ el: 'wrapper', template: '#ractive-main-template', data: DATA });
+      {% if not 'DATA' in globals(): DATA = {} %}
+      var ractive = new Ractive({ el: 'wrapper', template: '#ractive-main-template', data:{%=XML(DATA)%} });
       ractive.on('save',function(event,form_name){
          event.original.preventDefault();
          var data = {'forms':{}};

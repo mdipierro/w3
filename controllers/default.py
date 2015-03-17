@@ -2,9 +2,22 @@ import os, json
 from form import ractive, Form
 from osutils import get_files
 
+auth.data = {
+    'user':auth.user,
+    'links':
+        {'sign_in':URL('user/login'),
+         'sign_out':URL('user/logout'),
+         'profile':URL('user/profile'),
+         'lost_password':URL('user/request_reset_password'),
+         'lost_username':URL('user/request_retrieve_username'),
+         'change_password':URL('user/change_password')}}
+
 @ractive
 def index():
-    return dict()
+    return dict(auth=auth.data)
+
+def user():
+    return dict(form=auth())
 
 @ractive
 def files():

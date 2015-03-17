@@ -19,6 +19,7 @@
 {% block footer %}
 <script src="{%= STATIC %}ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+(function(){
   var urlVars = (function() { var vars = {}, parts = window.location.href.split('#')[0].replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {vars[key] = value;});return vars;})();
   try {
     var modes = {'html':'html','js':'javascript','py':'python','css':'css'};
@@ -34,5 +35,6 @@
     ractive.data.forms[0].bytes=editor.getValue();
     ractive.fire('save',event,0);
   });
+})();
 </script>
 {% end %}

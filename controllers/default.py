@@ -25,7 +25,7 @@ def files():
     alerts = []
     user = {'first_name':'Massimo'}
     form = request.forms.get('0')
-    if form:        
+    if form:
         # save file
         filename = os.path.abspath(os.path.join(request.folder,form['filename']))
         if filename.startswith(request.folder):
@@ -50,7 +50,7 @@ def files():
                 alerts.append({'info':'File is too large'})
         else:
             alerts.append({'error':'File does not exist'})
-    return dict(menu = files, user=user, alerts=alerts, forms=[dict(bytes=bytes,filename=filename)])
+    return dict(menu = files, user=user, alerts=alerts, forms=[dict(bytes=bytes,filename=filename)],auth=auth.data)
 
 @ractive
 def form():
@@ -69,12 +69,17 @@ def form():
         ]
     """
     alerts = []
+    print request.forms.get('0')
     form = Form(db.thing).process(request.forms.get('0'))
     if form.errors: alerts.append({'error':'Invalid form'})
     table = db(db.thing).select().xml() # this should move to JS too
-    return dict(forms = [form], table=table, alerts=alerts)
+    return dict(forms = [form], table=table, alerts=alerts, auth=auth.data)
 
 @ractive
 def markmin():
     bytes = open(os.path.join(request.folder,'private','example.mm2')).read()
-    return dict(forms = [{'filename':'example','bytes':bytes}])
+    return dict(forms = [{'filename':'example','bytes':bytes}],auth=auth.data)
+
+@ractive
+def scroll():
+    return dict()

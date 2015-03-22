@@ -25,10 +25,10 @@
 </div>
 
 {% block footer %}
-<script src="{%= STATIC %}js/jquery.oembed.js"></script>
+<script src="{%= URL('static','js/jquery.oembed.js') %}"></script>
 <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-<script src="{%= STATIC %}js/sugar.min.js"></script>
-<script src="{%= STATIC %}js/markmin.js"></script>
+<script src="{%= URL('static','js/sugar.min.js') %}"></script>
+<script src="{%= URL('static','js/markmin.js') %}"></script>
 <script>
   ractive.on('click-edit',(function(){
      var ta = jQuery('.markmin-source');

@@ -19,10 +19,6 @@
     <link href="{%= URL('static','css/dashboard.css') %}" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="{%= URL('static','css/font-awesome.min.css') %}" rel="stylesheet">
-    <!-- For tag input -->
-    <link href="{%= URL('static','css/bootstrap-tagsinput.css') %}" rel="stylesheet">
-    <!-- For calendar popup -->
-    <link href="{%= URL('static','css/calendar.css') %}" rel="stylesheet">
     {% block head %}{% end %}
   </head>
   <body>
@@ -116,11 +112,11 @@
           {{/if}}
         </ul>
       </nav>
-
       <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
       <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
           {{>menu_items {menu: menu, path: 'menu'} }}
+          {% for k in range(3000): %}<li>{% = k %}</li>{% pass %}    
         </ul>
         <!-- the code below defines a ractive partial for nested menus -->
         <!-- {{>menu_items}} -->
@@ -139,11 +135,12 @@
           {{/if}}
         </li>
         {{/menu}}
-        <!-- {{/menu_items}} -->
-      </div><!-- /.navbar-collapse -->
+        <!-- {{/menu_items}} -->                
+      </div><!-- /.navbar-collapse -->        
+      
       <div id="page-wrapper">
         <div class="container-fluid">
-          {% include %}  
+          Hello World
         </div><!-- /.container-fluid -->
       </div><!-- /#page-wrapper -->
       <!-- include form styling information -->
@@ -156,12 +153,24 @@
     <script src="{%= URL('static','js/jquery.min.js') %}"></script>
     <script src="{%= URL('static','js/ractive.min.js') %}"></script>
     <script src="{%= URL('static','js/bootstrap.min.js') %}"></script>
-    <script src="{%= URL('static','js/bootstrap-tagsinput.js') %}"></script>
-    <script src="{%= URL('static','js/calendar.js') %}"></script>
     <script>
-      var RACTIVE_DATA = {%= XML(DATA if 'DATA' in globals() else {}) %};
+      {% if not 'DATA' in globals(): DATA = {} %}
+      var ractive = new Ractive({ el: 'wrapper', template: '#ractive-main-template', data:{%=XML(DATA)%} });
+      ractive.on('save',function(event,form_name){
+         event.original.preventDefault();
+         var data = {'forms':{}};
+         data.forms[form_name] = ractive.data.forms[form_name];
+         var info = {url:window.location.href, method:'POST', contentType:'application/json',
+                     data:JSON.stringify(data), processData:false};
+         jQuery.ajax(info)
+         .then(function(data){
+            if(data.redirect) window.location=data.redirect; 
+            else {for(var key in data) ractive.set(key,data[key]); ractive.fire('saved',data);}
+         }).fail(function(data){alert("Network error: "+data);});
+      }); 
     </script>
-    <script src="{%= URL('static','js/plugin_ractive.js') %}"></script>
     {% block footer %}{% end %}
   </body>
 </html>
+
+

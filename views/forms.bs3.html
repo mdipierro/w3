@@ -22,7 +22,7 @@ form = [
 
     {{#if (type=='string' && !options)}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <label class="col-md-4 control-label">{{=label}}</label>  
       <div class="col-md-4">
         <input name="{{name}}" type="text" value="{{value}}"
                placeholder="placeholder" class="form-control input-md"/>
@@ -33,20 +33,20 @@ form = [
 
     {{#if (type=='integer' && !options)}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <label class="col-md-4 control-label">{{=label}}</label>  
       <div class="col-md-4">
-        <input name="{{name}}" type="string" value="{{value}}"
+        <input name="{{name}}" type="string" value="{{value}}" on-keyup="validate-integer"
                placeholder="placeholder" class="form-control input-md">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
     </div>
     {{/if}}
 
-    {{#if (type=='double' && !options)}}
+    {{#if ((type=='double' || type=='decimal') && !options)}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <label class="col-md-4 control-label">{{=label}}</label>  
       <div class="col-md-4">
-        <input name="{{name}}" type="string" value="{{value}}"
+        <input name="{{name}}" type="string" value="{{value}}" on-keyup="validate-double"
                placeholder="placeholder" class="form-control input-md">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
@@ -56,10 +56,10 @@ form = [
 
     {{#if (type=='date' && !options)}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <label class="col-md-4 control-label">{{=label}}</label>  
       <div class="col-md-4">
-        <input name="{{name}}" type="string" value="{{value}}" 
-               placeholder="placeholder" class="form-control input-md">
+        <input name="{{name}}" type="string" value="{{value}}" decorator="dateinput"
+               placeholder="placeholder" class="form-control input-md" autocomplete="off">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
     </div>
@@ -67,10 +67,10 @@ form = [
 
     {{#if (type=='time' && !options)}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <label class="col-md-4 control-label">{{=label}}</label>  
       <div class="col-md-4">
-        <input name="{{name}}" type="string" value="{{value}}"
-               placeholder="placeholder" class="form-control input-md">
+        <input name="{{name}}" type="string" value="{{value}}"  decorator="timeinput"
+               placeholder="placeholder" class="form-control input-md" autocomplete="off">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
     </div>
@@ -78,10 +78,10 @@ form = [
 
     {{#if (type=='datetime' && !options)}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">{{=label}}</label>  
+      <label class="col-md-4 control-label">{{=label}}</label>  
       <div class="col-md-4">
-        <input name="{{name}}" type="string" value="{{value}}" 
-               placeholder="placeholder" class="form-control input-md">
+        <input name="{{name}}" type="string" value="{{value}}"  decorator="datetimeinput"
+               placeholder="placeholder" class="form-control input-md" autocomplete="off">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
     </div>
@@ -89,7 +89,7 @@ form = [
 
     {{#if (type=='password')}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="passwordinput">{{label}}</label>
+      <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">
         <input name="{{name}}" type="password" value="{{value}}"
                placeholder="placeholder" class="form-control input-md">
@@ -100,11 +100,11 @@ form = [
 
     {{#if (type=='boolean')}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="checkboxes">{{label}}</label>
+      <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">
         <div class="checkbox">
-          <label for="checkboxes-0">
-            <input type="checkbox" value="on" checked="{{value}}"/>
+          <label for="checkboxes-{{name}}">
+            <input type="checkbox" value="on" checked="{{value}}" id="checkboxes-{{name}}"/>
             One
           </label>
         </div>
@@ -115,12 +115,12 @@ form = [
     {{#if (type.split(':')[0]!='list' && options)}}
     <!-- Select Basic -->
     <div class="form-group">
-      <label class="col-md-4 control-label" for="selectbasic">{{label}}</label>
+      <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">
         <select name="{{name}}" class="form-control" value="{{value}}">
           {{#options}}
           <option value="{{value}}">{{label}}</option>
-          {{/optoons}}
+          {{/options}}
         </select>
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
@@ -130,7 +130,7 @@ form = [
     {{#if (type.split(':')[0]=='list' && options)}}
     <!-- Select Multiple -->    
     <div class="form-group">
-      <label class="col-md-4 control-label" for="selectmultiple">{{label}}</label>
+      <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">
         <select name="{{name}}" class="form-control" multiple="multiple"
                 value="{{value}}">
@@ -142,10 +142,29 @@ form = [
       </div>
     </div>
     {{/if}}
+
+    {{#if (type.split(':')[0]=='list' && !options)}}
+    <!-- Select Multiple -->    
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{label}}</label>
+      <div class="col-md-4">
+        <!--
+        <input name="{{name}}" type="text" value="{{value}}" decorator="tagsinput">
+        -->
+        <select name="{{name}}" class="form-control" value="{{value}}"
+                decorator="tagsinput" multiple>
+          {{#value}}
+          <option>{{.}}</option>
+          {{/value}}
+        </select>
+        {{#error}}<span class="help-block">{{error}}</span>{{/error}}
+      </div>
+    </div>
+    {{/if}}
     
     {{#if (type=='text')}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textarea">{{label}}</label>
+      <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">                     
         <textarea class="form-control" name="{{name}}" value="{{value}}"></textarea>
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
@@ -156,7 +175,7 @@ form = [
     <!-- todo: file uploads this does not work as designed -->
     {{#if (type=='upload')}}
     <div class="form-group">
-      <label class="col-md-4 control-label" for="filebutton">{{label}}</label>
+      <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">
         <input name="{{name}}" class="input-file" type="file">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
@@ -166,7 +185,7 @@ form = [
     {{/forms[form_name||0]}}
     
     <div class="form-group">
-      <label class="col-md-4 control-label" for="button1id"></label>      
+      <label class="col-md-4 control-label"></label>      
       <div class="col-md-8">
         {{#forms[form_name||0]}}
         {{#if (type=='submit')}}
@@ -182,3 +201,4 @@ form = [
     
   </fieldset>
 </form>
+

@@ -30,6 +30,7 @@
 <script src="{%= URL('static','js/sugar.min.js') %}"></script>
 <script src="{%= URL('static','js/markmin.js') %}"></script>
 <script>
+jQuery(function(){
   ractive.on('click-edit',(function(){
      var ta = jQuery('.markmin-source');
      if(ta.is(':visible')) ta.animate(
@@ -42,5 +43,6 @@
   }).debounce(1000);
   ractive.on('source-keyup',render);
   render();
+});
 </script>
 {% end %}

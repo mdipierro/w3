@@ -75,7 +75,6 @@ jQuery.fn.markmin = (function(){
                                     d.push(m);
                             });                                                
                         var tag_open = '<'+a+(d?' ':'')+d.join(' ');
-                        console.log(tag_open);
                         if(closed)
                             return tag_open+'/>';
                         else
@@ -131,7 +130,6 @@ jQuery.fn.markmin = (function(){
                 html = html.replace(re_xml,function(m){
                         if(settings.sanitize) m = sanitizeHTML(m,settings);
                         code.push(m);
-                        console.log(html)
                         return "__MATCH:"+(code.length-1)+"__";
                     });
             }

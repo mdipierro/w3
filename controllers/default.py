@@ -80,6 +80,3 @@ def markmin():
     bytes = open(os.path.join(request.folder,'private','example.mm2')).read()
     return dict(forms = [{'filename':'example','bytes':bytes}],auth=auth.data)
 
-@ractive
-def scroll():
-    return dict()

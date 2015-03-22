@@ -17,7 +17,11 @@
       <div class="markmin-container">
         {{#forms[0]}}
         <textarea class="markmin-source" on-keyup="source-keyup" value="{{bytes}}"></textarea>
-        <div class="markmin-html"></div>
+        <div class="markmin-html">
+          <div style="padding:50px">
+            <img width="100px" src="{%= URL('static','images/loader.svg') %}"/>
+          </div>
+        </div>
         {{/forms[0]}}
       </div>
     </div>

@@ -296,3 +296,10 @@ blockquote {
    font-size: 12px;
    font-style: italic;
 }
+
+.tree-nav {
+   background-color: transparent;
+}
+.tree-nav a {
+   color: #666;
+}

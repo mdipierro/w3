@@ -56,9 +56,12 @@ ractive.on('save',function(event,form_name){
                     data:JSON.stringify(data), processData:false};
         jQuery.ajax(info)
             .then(function(data){
-                    if(data.redirect) window.location=data.redirect;
-                    else {for(var key in data) 
-                            ractive.set(key,data[key]); ractive.fire('saved',data);}
+                    if(data.redirect) 
+                        window.location=data.redirect;
+                    else {
+                        for(var key in data) 
+                            ractive.set(key,data[key]); ractive.fire('saved',data);
+                    }
                 }).fail(function(data){alert("Network error: "+data);});
     });
 

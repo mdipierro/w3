@@ -22,8 +22,8 @@
     </div>
 </div>
 
-
 {% block footer %}
+<script src="{%= URL('static','js/web2py.js') %}"></script>
 <script>
     jQuery("#web2py_user_form input:visible:enabled:first").focus();
 {% if request.args(0)=='register': %}

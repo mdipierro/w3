@@ -5,11 +5,14 @@ def ractive(f):
     def tmp():
         request = current.request
         response = current.response
+        response.delimiters = '{%','%}'
         request.forms = {}
         if request.env.request_method=='POST':
-            data = json.load(request.body)
-            if isinstance(data,dict) and 'forms' in data:
-                request.forms = data['forms']
+            try: data = json.load(request.body)
+            except: pass
+            else:
+                if isinstance(data,dict) and 'forms' in data:
+                    request.forms = data['forms']
         data = serializers.json(f())
         path = serializers.json('/'.join(URL().split('/')[:4])+'/')
         response.delimiters = ['{%','%}']

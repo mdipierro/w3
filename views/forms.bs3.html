@@ -172,16 +172,17 @@ form = [
     </div>
     {{/if}}
 
-    <!-- todo: file uploads this does not work as designed -->
     {{#if (type=='upload')}}
     <div class="form-group">
       <label class="col-md-4 control-label">{{label}}</label>
       <div class="col-md-4">
-        <input name="{{name}}" class="input-file" type="file">
+        <input name="{{name}}" class="input-file" type="file" 
+               on-change="magic-upload" data-form-name="{{form_name}}">
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
     </div>
     {{/if}}
+
     {{/forms[form_name||0]}}
     
     <div class="form-group">

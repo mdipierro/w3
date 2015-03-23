@@ -1,5 +1,5 @@
 import os, json
-from form import ractive, Form
+from plugin_ractive import ractive, Form
 from osutils import get_files
 
 auth.data = {

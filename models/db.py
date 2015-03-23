@@ -1,6 +1,5 @@
 db = DAL('sqlite://storage.sqlite')
 from gluon.tools import Auth; auth = Auth(db); auth.define_tables();
-response.delimiters = '{%','%}'
 
 db.define_table(
     'thing',
@@ -13,5 +12,6 @@ db.define_table(
     Field('created3_on','datetime'),
     Field('color',requires=IS_IN_SET(('red','green','blue'))),
     Field('tags','list:string',default=['pippo','pluto']),
-    Field('info', 'text'))
+    Field('info', 'text'),
+    Field('filename','upload'))
 

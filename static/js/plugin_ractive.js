@@ -82,3 +82,26 @@ ractive.on('validate-double',function(event) {
         if(event.node.value != nvalue) event.node.value = nvalue;
     });
 
+ractive.on('magic-upload',function(event) {        
+        var file = event.node.files[0];
+        var reader = new FileReader();
+        var form_name = event.node.getAttribute('data-form-name');
+        var name = event.node.getAttribute('name');
+        var filename = file.name;
+        var form = ractive.data.forms[form_name];
+        var fields = form.filter(function(field){return field.name==name});
+        if(file) {
+            if(file.size>32*1024*1024) {
+                fields[0].error = 'File too large to upload';
+                ractive.set('forms',ractive.data.forms);
+            } else {
+                reader.onload = function(e) {                    
+                    var data = e.target.result;
+                    fields[0].value = {filename:filename, data:data};
+                    fields[0].error = null;
+                    ractive.set('forms',ractive.data.forms);
+                }
+                reader.readAsBinaryString(event.node.files[0]);            
+            }
+        }
+    });

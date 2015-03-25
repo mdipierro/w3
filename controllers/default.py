@@ -59,7 +59,7 @@ def files():
 def form():
     alerts = []
     print request.forms.get('0')
-    form = Form(db.thing).process(request.forms.get('0'))
+    form = Form(db.thing,15).process(request.forms.get('0'))
     if form.errors: alerts.append({'error':'Invalid form'})
     table = db(db.thing).select().xml() # this should move to JS too
     return dict(forms = [form], table = table, alerts = alerts, auth = auth.data)

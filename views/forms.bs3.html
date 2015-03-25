@@ -178,6 +178,10 @@ form = [
       <div class="col-md-4">
         <input name="{{name}}" class="input-file" type="file" 
                on-change="magic-upload" data-form-name="{{form_name}}">
+        {{#if (value && value.link)}}
+        <input type="checkbox" value="on" checked="{{value.keep}}"/>
+        {{#if value.keep}}<a href="{{value.link}}">{{value.link}}</a>{{/if}}
+        {{/if}}
         {{#error}}<span class="help-block">{{error}}</span>{{/error}}
       </div>
     </div>

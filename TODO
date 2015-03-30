@@ -5,3 +5,12 @@ https://github.com/StoicLoofah/chronoline.js
 
 SCORM crap
 https://github.com/RusticiSoftware/SCORMCloud_PythonDemoApp/blob/master/Sample.py
+
+generate table (almost done)
+
+-> search & sort
+-> edit
+-> details
+-> delete
+
+query,order,offset,limit,selected_item,action=(search,edit,deltails,delete)

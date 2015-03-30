@@ -1,0 +1,108 @@
+{% extend 'layout.dashboard.bs3.html' %}
+
+{{> render_table {table_name:0} }}
+
+<!-- {{>render_table}} -->
+{{#tables[table_name||0]}}
+<div data-table-name="{{table_name}}">
+  <table>
+    <tbody>
+      <tr> 
+        <td style="padding: 0 10px">Search</td>
+        <td class="form-group"><input class="form-control" value="{{search}}"/></td>
+        <td>{{#if prev}}<a class="btn btn-default" on-click="prev">Prev</a>{{/if}}</td>
+        <td style="padding: 0 10px">{{offset}} to {{offset+limit-1}}</td>
+        <td>{{#if next}}<a class="btn btn-default" on-click="next">Next</a>{{/if}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <td></td>
+        {{#columns}}
+        <th style="white-space:nowrap">        
+          {{#if (order==name)}}
+          <a on-click="sort:{{name}}">{{name}} <i class="fa fa-caret-down"></i></a>
+          {{/if}}
+          {{#if (order=='~'+name)}}
+          <a on-click="sort:{{name}}">{{name}} <i class="fa fa-caret-up"></i></a>
+          {{/if}}
+          {{#if (order!=name && order!='~'+name)}}
+          <a on-click="sort:{{name}}">{{name}}</a>
+          {{/if}}
+        </th>
+        {{/columns}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#items:itemnum}}
+      <tr data-table-item-id="{{items[itemnum].id}}">
+        <td>
+          <span style="white-space:nowrap;background:#ddd; padding:5px">
+            <a on-click="detail"><i class="fa fa-info"></i></a>
+            <a on-click="edit"><i class="fa fa-edit"></i></a>
+            <a on-click="delete"><i class="fa fa-remove"></i></a>
+          </span>
+        </td>
+        {{#columns}}
+        <td class="{{type}}" style="white-space:nowrap">{{items[itemnum][name]}}</td>
+        {{/columns}}            
+      </tr>
+      {{#if items[itemnum].id == selected_item}}
+      <tr>
+        <td colspan="{{columns.length+1}}">
+          {{> render_form {form_name:table_name+':'+selected_item} }}
+        </td>        
+      </tr>
+      {{/if}}
+      {{/items}}
+    </tbody>
+  </table>
+  {{/table}}
+</table>
+<!-- {{/render_table}} -->
+
+{% block footer %}
+<script>
+  ractive.on('prev',function(event) {
+     var table_name = jQuery(event.node).closest('[data-table-name]').data('table-name');
+     alert('prev');
+  });
+  ractive.on('next',function(event) {
+     var table_name = jQuery(event.node).closest('[data-table-name]').data('table-name');
+     alert('next');
+  });
+  ractive.on('sort',function(event,order) {
+     var table_name = jQuery(event.node).closest('[data-table-name]').data('table-name');
+     if(ractive.data.tables[table_name].order == order)
+         ractive.data.tables[table_name].order = '~'+order;
+     else
+         ractive.data.tables[table_name].order = order;
+     ractive.set('tables',ractive.data.tables);
+  });
+  ractive.on('detail',function(event) {
+     var id = jQuery(event.node).closest('[data-table-item-id]').data('table-item-id');
+     alert('detail '+id);
+  });
+  ractive.on('edit',function(event) {
+    var table_name = jQuery(event.node).closest('[data-table-name]').data('table-name');
+    var id = jQuery(event.node).closest('[data-table-item-id]').data('table-item-id');
+    if(ractive.data.tables[table_name].selected_item == id)
+       ractive.data.tables[table_name].selected_item = null;
+    else
+       ractive.data.tables[table_name].selected_item = id;
+    ractive.set('tables',ractive.data.tables);
+  });
+  ractive.on('delete',function(event) {
+     if(confirm("Delete item?")) {
+       var table_name = jQuery(event.node).closest('[data-table-name]').data('table-name');
+       var id = jQuery(event.node).closest('[data-table-item-id]').data('table-item-id');
+       var items = ractive.data.tables[table_name].items;
+       items = items.filter(function(item){return item.id!=id;});
+       ractive.data.tables[table_name].items = items;
+       ractive.set('tables',ractive.data.tables);
+     }
+  });
+</script>
+{% end %}

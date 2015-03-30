@@ -58,7 +58,6 @@ def files():
 @ractive
 def form():
     alerts = []
-    print request.forms.get('0')
     form = Form(db.thing,15).process(request.forms.get('0'))
     if form.errors: alerts.append({'error':'Invalid form'})
     table = db(db.thing).select().xml() # this should move to JS too
@@ -77,3 +76,36 @@ def tree():
             {'name':'b', 'link':'http://google.com'}]
             }]
     return dict(tree = tree, auth = auth.data)
+
+@ractive
+def table():
+    table_name = '0'
+    table = {
+        'offset':0,
+        'limit':100,
+        'order':['name'],
+        'columns':[{'name':f.name, 'type':f.type} for f in db.thing][:3],
+        'items':db(db.thing).select().as_list(),
+        'next':True,
+        'prev':True,
+        'editable':True,
+        'deletable':True,
+        'details':True,
+        'selected_item':None,
+#        'form':null,
+        }             
+    
+    # form_name=0&action=search&search=query&order=name
+    # form_name=0&action=edit&id=id
+    # form_name=0&action=detail&id=id
+    # form_name=0&action=delete&id=id
+    """
+    if request.forms:
+        for key in request.forms:
+            parts = key.split(':',1)
+            if parts[0]=='table_name':
+                form = Form(db.thing,parts[1]).process(request.forms[key])    
+                """
+    print request.forms.get(table_name+':1')
+    form = Form(db.thing,1).process(request.forms.get(table_name+':1'))    
+    return dict(tables = {table_name:table}, auth = auth.data, forms={'0:1':form})

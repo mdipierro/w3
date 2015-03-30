@@ -16,6 +16,7 @@ form = [
 ]
 -->
 
+<!-- {{>render_form}} -->
 <form class="form-horizontal">
   <fieldset>
     {{#forms[form_name||0]:num}}
@@ -202,8 +203,8 @@ form = [
         {{/if}}
         {{/forms[form_name||0]}}
       </div>
-    </div>
-    
+    </div>    
   </fieldset>
 </form>
+<!-- {{/render_form}} -->
 

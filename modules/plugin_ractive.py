@@ -1,5 +1,6 @@
 import json
-from gluon import serializers, current, URL
+from gluon.utils import web2py_uuid
+from gluon import serializers, current, URL, current
 
 def ractive(f):
     def tmp():
@@ -23,25 +24,33 @@ def ractive(f):
     return tmp
 
 class Form(object):    
-    def __init__(self,table,record=None):
+    def __init__(self, table, record=None, csrf_protection=True):
         self.table = table
         self.record = record
+        self.csrf_protection = csrf_protection
         self.values = {}
         self.errors = {}
     def process(self, vars):
         self.errors.clear()
         self.values.clear()
         if vars:
+            if self.csrf_protection:
+                if vars[0]['name']!='_csrf' or vars[0]['value'] != current.session._csrf:
+                    return self
             fieldnames = self.table.fields
             for item in vars:
                 name = item.get('name')
                 if name and name in fieldnames and 'value' in item:
+                    value = item['value']
                     if self.table[name].type=='upload':
-                        if 'data' in item['value']:
-                            item['value']['data'] = item['value']['data'].encode('latin-1')
-                        elif not item['value'].get('keep',True):
-                            item['value'] = None
-                    (value,error) = self.table[name].validate(item['value'])
+                        keep = value.get('keep')
+                        if keep:
+                            continue
+                        elif 'data' in value:
+                            value['data'] = value['data'].encode('latin-1')
+                        elif not keep:
+                            value = None
+                    (value,error) = self.table[name].validate(value)
                     if error:
                         self.errors[name] = error
                     self.values[item['name']] = value
@@ -56,6 +65,9 @@ class Form(object):
         return self
     def as_list(self):
         form = []
+        if self.csrf_protection:
+            current.session._csrf = current.session._csrf or web2py_uuid()
+            form.append({'name':'_csrf','type':'hidden','value':current.session._csrf})
         if self.record:
             record = self.record if hasattr(self.record,'id') else self.table[self.record]
         for field in self.table:
@@ -75,7 +87,8 @@ class Form(object):
             if field.type == 'upload':
                 row['value'] = {'link':value,'keep':True}
             else:
-                row['value'] = self.values.get(field.name,value)
+                row['value'] = self.values.get(field.name,value)            
             form.append(row)
         form.append({'type':'submit','value':'submit'})        
         return form
+

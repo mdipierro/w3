@@ -24,19 +24,34 @@ def ractive(f):
     return tmp
 
 class Form(object):    
-    def __init__(self, table, record=None, csrf_protection=True):
+    def __init__(self, table, record=None, deletable=False, csrf_protection=True):
         self.table = table
         self.record = record
+        self.deletable = deletable
         self.csrf_protection = csrf_protection
         self.values = {}
         self.errors = {}
+        self.processed = False
+        self.accepted = False
+        self.deleted = False
     def process(self, vars):
         self.errors.clear()
         self.values.clear()
-        if vars:
+        if vars and not self.processed:
             if self.csrf_protection:
-                if vars[0]['name']!='_csrf' or vars[0]['value'] != current.session._csrf:
-                    return self
+                if vars and (vars[0].get('name')!='_csrf' or 
+                             vars[0].get('value') != current.session._csrf):
+                    return self        
+            self.processed = True
+            id = self.record.id if hasattr(self.record,'id') else self.record
+            recordset = self.table._db(self.table.id==id)
+            
+            if [var for var in vars if var.get('name')=='_delete_record' and var.get('value')]:
+                recordset.delete()
+                self.deleted = True
+                self.accepted = True
+                return self
+
             fieldnames = self.table.fields
             for item in vars:
                 name = item.get('name')
@@ -55,13 +70,13 @@ class Form(object):
                         self.errors[name] = error
                     self.values[item['name']] = value
             if not self.errors:
+                self.accepted = True
                 if not self.record:
                     self.table.insert(**self.values)            
                 else:
-                    id = self.record.id if hasattr(self.record,'id') else self.record
                     if 'id' in self.values:
                         self.values.pop('id')
-                    self.table._db(self.table.id==id).update(**self.values)
+                    recordset.update(**self.values)
         return self
     def as_list(self):
         form = []
@@ -70,6 +85,8 @@ class Form(object):
             form.append({'name':'_csrf','type':'hidden','value':current.session._csrf})
         if self.record:
             record = self.record if hasattr(self.record,'id') else self.table[self.record]
+            if not record:
+                return []
         for field in self.table:
             try:
                 options = [{'value':o[0],'label':o[1]} for o in field.requires.options()]
@@ -88,6 +105,12 @@ class Form(object):
                 row['value'] = {'link':value,'keep':True}
             else:
                 row['value'] = self.values.get(field.name,value)            
+            form.append(row)
+        if self.deletable and self.record:
+            row = {'name':'_delete_record',
+                   'type':'boolean',
+                   'label':'Delete?',
+                   'value':False}
             form.append(row)
         form.append({'type':'submit','value':'submit'})        
         return form

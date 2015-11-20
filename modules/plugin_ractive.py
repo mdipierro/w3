@@ -92,7 +92,7 @@ class Form(object):
                 options = [{'value':o[0],'label':o[1]} for o in field.requires.options()]
             except:
                 options = None
-            if self.record and field.name in record:
+            if self.record and record and field.name in record:
                 value = record[field.name]
             else:
                 value = field.default
